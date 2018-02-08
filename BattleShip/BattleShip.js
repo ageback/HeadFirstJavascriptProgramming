@@ -160,7 +160,19 @@ var controller = {
     /**
      * 对猜测位置进行处理，再将结果交给模型；检测游戏是否结束。
      */
-    processGuess: function (guess) {},
+    processGuess: function (guess) {
+        var location = this.parseGuess(guess);
+        // location 不是null就说明是有效位置
+        if(location){
+            // 猜测有效，就将guesses+1
+            this.guesses++;
+            var hit=model.fire(location);
+            if(hit&&model.shipsSunk===model.numShips){
+                view.displayMessage("You sank all my battleships, in "+this.guesses + " guesses");
+                
+            }
+        }
+    },
 
     /**
      * 辅助方法
