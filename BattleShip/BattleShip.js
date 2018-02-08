@@ -1,5 +1,6 @@
 $(function () {
-    createSeaTable();
+    init();
+
     //testFire();
 });
 
@@ -25,6 +26,32 @@ function testView() {
     view.displayHit("26");
 
     view.displayMessage("Tap tap, is this thing on?");
+}
+
+function init() {
+    createSeaTable();
+    var fireButton = document.getElementById("fireButton");
+    fireButton.onclick = handleFireButton;
+    var guessInput=document.getElementById("guessInput");
+    guessInput.onkeypress=handleKeyPress;
+
+}
+
+function handleKeyPress(){
+    var fireButton=document.getElementById("fireButton");
+    if(e.keyCode===13){
+        fireButton.click();
+        return false;
+    }
+}
+
+function handleFireButton() {
+    var guessInput = document.getElementById("guessInput");
+    var guess = guessInput.value;
+    controller.processGuess(guess);
+    guessInput.value = "";
+    guessInput.focus();
+
 }
 
 /**
@@ -163,13 +190,13 @@ var controller = {
     processGuess: function (guess) {
         var location = this.parseGuess(guess);
         // location 不是null就说明是有效位置
-        if(location){
+        if (location) {
             // 猜测有效，就将guesses+1
             this.guesses++;
-            var hit=model.fire(location);
-            if(hit&&model.shipsSunk===model.numShips){
-                view.displayMessage("You sank all my battleships, in "+this.guesses + " guesses");
-                
+            var hit = model.fire(location);
+            if (hit && model.shipsSunk === model.numShips) {
+                view.displayMessage("You sank all my battleships, in " + this.guesses + " guesses");
+
             }
         }
     },
