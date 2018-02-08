@@ -35,10 +35,10 @@ function init() {
     var guessInput = document.getElementById("guessInput");
     guessInput.onkeypress = handleKeyPress;
     model.generateShipLocations();
-    
+
 }
 
-function handleKeyPress() {
+function handleKeyPress(e) {
     var fireButton = document.getElementById("fireButton");
     if (e.keyCode === 13) {
         fireButton.click();
