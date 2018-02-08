@@ -160,11 +160,11 @@ var model = {
         if (direction === 1) {
             // 生成水平战舰的起始位置
             row = Math.floor(Math.random() * this.boardSize);
-            col = Math.floor(Math.random() * (this.boardSize) - this.shipLength);
+            col = Math.floor(Math.random() * (this.boardSize - this.shipLength));
         } else {
             // 生成垂直战舰的起始位置
             col = Math.floor(Math.random() * this.boardSize);
-            row = Math.floor(Math.random() * (this.boardSize) - this.shipLength);
+            row = Math.floor(Math.random() * (this.boardSize - this.shipLength));
         }
 
         var newShipLocations = [];
