@@ -32,14 +32,15 @@ function init() {
     createSeaTable();
     var fireButton = document.getElementById("fireButton");
     fireButton.onclick = handleFireButton;
-    var guessInput=document.getElementById("guessInput");
-    guessInput.onkeypress=handleKeyPress;
-
+    var guessInput = document.getElementById("guessInput");
+    guessInput.onkeypress = handleKeyPress;
+    model.generateShipLocations();
+    
 }
 
-function handleKeyPress(){
-    var fireButton=document.getElementById("fireButton");
-    if(e.keyCode===13){
+function handleKeyPress() {
+    var fireButton = document.getElementById("fireButton");
+    if (e.keyCode === 13) {
         fireButton.click();
         return false;
     }
@@ -96,19 +97,9 @@ var model = {
      * 战舰数组，目前有3个战舰，为了简化测试工作，位置是硬编码的。
      * 以后版本将随机生成战舰位置。
      */
-    ships: [{
-            locations: ["06", "16", "26"],
-            hits: ["", "", ""]
-        },
-        {
-            locations: ["24", "34", "44"],
-            hits: ["", "", ""]
-        },
-        {
-            locations: ["10", "11", "12"],
-            hits: ["", "", ""]
-        }
-    ],
+    ships: [ { locations: [0, 0, 0], hits: ["", "", ""] },
+            { locations: [0, 0, 0], hits: ["", "", ""] },
+            { locations: [0, 0, 0], hits: ["", "", ""] } ],
 
     /**
      * guess:  用户输入的坐标值
@@ -146,6 +137,66 @@ var model = {
         }
         //否则，战舰已被击沉，因此返回true。
         return true;
+    },
+
+    /**
+     * 生成所有战舰
+     */
+    generateShipLocations: function () {
+        var locations;
+        for (let i = 0; i < this.numShips; i++) {
+            do {
+                locations = this.generateShip();
+            } while (this.collision(locations));
+            this.ships[i].locations = locations;
+
+        }
+    },
+
+    generateShip: function () {
+        // 随机决定战舰的方向，1为水平方向，0为垂直方向
+        var direction = Math.floor(Math.random() * 2);
+        var row, col;
+        if (direction === 1) {
+            // 生成水平战舰的起始位置
+            row = Math.floor(Math.random() * this.boardSize);
+            col = Math.floor(Math.random() * (this.boardSize) - this.shipLength);
+        } else {
+            // 生成垂直战舰的起始位置
+            col = Math.floor(Math.random() * this.boardSize);
+            row = Math.floor(Math.random() * (this.boardSize) - this.shipLength);
+        }
+
+        var newShipLocations = [];
+        for (let i = 0; i < this.shipLength; i++) {
+            if (direction === 1) {
+                // 在水平战舰的位置数组中添加位置
+                newShipLocations.push(row + "" + (col + i));
+
+            } else {
+                // 在垂直战舰的位置数组中添加位置
+                newShipLocations.push((row + i) + "" + col);
+
+            }
+
+        }
+        return newShipLocations;
+    },
+
+    /**
+     * 检测战舰位置重叠
+     */
+    collision:function(locations){
+        for (let i = 0; i < this.numShips; i++) {
+            var ship=model.ships[i];
+            for (let j = 0; j < locations.length; j++) {
+                if(ship.locations.indexOf(locations[j])>=0){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
 
