@@ -1,6 +1,6 @@
 $(function () {
     createSeaTable();
-    testFire();
+    //testFire();
 });
 
 function testFire() {
@@ -145,5 +145,43 @@ var view = {
     displayMiss: function (location) {
         var cell = document.getElementById(location);
         cell.setAttribute("class", "miss");
+    }
+}
+
+/**
+ * 控制器对象
+ */
+var controller = {
+    /**
+     * 记录猜测次数
+     */
+    guesses: 0,
+
+    /**
+     * 对猜测位置进行处理，再将结果交给模型；检测游戏是否结束。
+     */
+    processGuess: function (guess) {},
+
+    /**
+     * 辅助方法
+     */
+    parseGuess: function (guess) {
+        var alphabet = ["A", "B", "C", "D", "E", "F", "G"];
+
+        if (guess == null || guess.length != 2) {
+            alert("Oops, please enter a letter and a number on the board.");
+        } else {
+            var firstChar = guess.charAt(0);
+            var row = alphabet.indexOf(firstChar);
+            var column = guess.charAt(1);
+            if (isNaN(row) || isNaN(column)) {
+                alert("Oops, that isn't on the board.");
+            } else if (row < 0 || row >= model.boardSize || column < 0 || column >= model.boardSize) {
+                alert("Oops, that's off the board!");
+            } else {
+                return row + column;
+            }
+        }
+        return null;
     }
 }
