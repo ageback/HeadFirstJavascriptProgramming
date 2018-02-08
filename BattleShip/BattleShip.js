@@ -1,8 +1,20 @@
 $(function () {
     createSeaTable();
-    testView();
-
+    testFire();
 });
+
+function testFire() {
+    model.fire("53");
+    model.fire("06");
+    model.fire("16");
+    model.fire("26");
+    model.fire("34");
+    model.fire("24");
+    model.fire("44");
+    model.fire("12");
+    model.fire("11");
+    model.fire("10");
+}
 
 function testView() {
     view.displayMiss("00");
@@ -26,6 +38,87 @@ function createSeaTable() {
         }
         trHTML += "</tr>";
         $("#seaTable").append(trHTML);
+    }
+}
+
+/**
+ * model 对象
+ */
+var model = {
+    /**
+     * 游戏板网格大小
+     */
+    boardSize: 7,
+
+    /**
+     * 游戏包含的战舰数量
+     */
+    numShips: 3,
+
+    /**
+     * 击沉的战舰数
+     */
+    shipsSunk: 0,
+
+    /**
+     * 每艘战舰占据多少个单元格
+     */
+    shipLength: 3,
+
+    /**
+     * 战舰数组，目前有3个战舰，为了简化测试工作，位置是硬编码的。
+     * 以后版本将随机生成战舰位置。
+     */
+    ships: [{
+            locations: ["06", "16", "26"],
+            hits: ["", "", ""]
+        },
+        {
+            locations: ["24", "34", "44"],
+            hits: ["", "", ""]
+        },
+        {
+            locations: ["10", "11", "12"],
+            hits: ["", "", ""]
+        }
+    ],
+
+    /**
+     * guess:  用户输入的坐标值
+     */
+    fire: function (guess) {
+        for (var i = 0; i < this.numShips; i++) {
+            var ship = this.ships[i];
+            var index = ship.locations.indexOf(guess);
+            if (index >= 0) {
+                // 击中战舰，标记hit，并返回true
+                ship.hits[index] = "hit";
+                view.displayHit(guess);
+                view.displayMessage("HIT!");
+                if (this.isSunk(ship)) {
+                    view.displayMessage("You sank my battleship!");
+                    this.shipsSunk++;
+                }
+                return true;
+            }
+        }
+        view.displayMiss(guess);
+        view.displayMessage("You missed.");
+        return false;
+    },
+
+    /**
+     * 判断战舰是否被击沉
+     */
+    isSunk: function (ship) {
+        for (var i = 0; i < this.shipLength; i++) {
+            //只要有任何部位未被击中，战舰就还浮在水面上，因此返回false 。
+            if (ship.hits[i] != "hit") {
+                return false;
+            }
+        }
+        //否则，战舰已被击沉，因此返回true。
+        return true;
     }
 }
 
